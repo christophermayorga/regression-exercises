@@ -1,0 +1,1 @@
+This repo is for exercises on regression at CodeUp.
