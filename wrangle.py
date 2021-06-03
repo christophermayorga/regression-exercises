@@ -10,7 +10,7 @@ import env
 def wrangle_telco():
     '''
     Read telco_data csv file into a pandas DataFrame,
-    only returns two contract customers and desired columns,
+    only returns two-year contract customers and desired columns,
     drop any rows with Null values, convert numeric columns to int or float,
     return cleaned telco DataFrame.
     '''
@@ -34,3 +34,20 @@ def wrangle_telco():
     
     return df
 
+def wrangle_zillow():
+    '''
+    Read zillow csv file into a pandas DataFrame,
+    only returns desired columns and single family residential properties,
+    drop any rows with Null values, drop duplicates,
+    return cleaned zillow DataFrame.
+    '''
+    # Acquire data from csv file.
+    df = pd.read_csv('zillow.csv')
+    
+    # Drop nulls
+    df = df.dropna()
+    
+    # Drop duplicates
+    df = df.drop_duplicates()
+    
+    return df
