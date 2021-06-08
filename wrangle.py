@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import env
+import os
 
 def wrangle_telco():
     '''
@@ -21,7 +22,7 @@ def wrangle_telco():
     df = df[df.contract_type == 'Two year']
     
     # Keep only the necessary columns
-    df = df[['customer_id', 'tenure', 'monthly_charges', 'total_charges']]
+    df = df[['customer_id', 'tenure', 'monthly_charges', 'total_charges', 'churn']]
     
     # Replace white space values with NaN values.
     df = df.replace(r'^\s*$', np.nan, regex=True)
@@ -51,3 +52,20 @@ def wrangle_zillow():
     df = df.drop_duplicates()
     
     return df
+
+def wrangle_mall():
+    '''
+    Checks for zillow.csv file and imports it if present. If absent, it will pull in bedroom bathroom counts, sq ft.
+    tax value dollar count, year built, tax amount, and fips from properties 2017 in the zillow database. Then it will
+    drop nulls and drop duplicates
+    '''
+    filename = 'mall.csv'
+    if os.path.isfile(filename):
+        mall_df = pd.read_csv(filename, index_col=0)
+        return mall_df
+    else:
+        mall_df = pd.read_sql('''SELECT * FROM customers''', env.get_db_url('mall_customers'))
+        mall_df = mall_df.dropna()
+        mall_df = mall_df.drop_duplicates()
+        mall_df.to_csv('mall.csv')
+        return mall_df 

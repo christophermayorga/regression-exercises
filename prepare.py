@@ -52,3 +52,13 @@ def scale_telco_data(train, validate, test):
     test['total_charges'] = scaler_totalcharges.transform(test[['total_charges']])
 
     return train, validate, test
+
+def train_validate_test_split(df):
+    '''
+    Generic function. Takes in any dataframe and returns train, validate, and test splits.
+    '''
+    # Assumes data is clean
+    # Now just split
+    train, test = train_test_split(df, train_size=0.8, random_state=1349)
+    train, validate = train_test_split(train, train_size=0.7, random_state=1349)
+    return train, validate, test
