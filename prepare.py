@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import MinMaxScaler
+import sklearn.feature_selection
+from sklearn.linear_model import LinearRegression
 
 # turn off warnings
 import warnings
@@ -62,3 +64,24 @@ def train_validate_test_split(df):
     train, test = train_test_split(df, train_size=0.8, random_state=1349)
     train, validate = train_test_split(train, train_size=0.7, random_state=1349)
     return train, validate, test
+
+def select_kbest(X, y, k):
+    # make the object
+    kbest = sklearn.feature_selection.SelectKBest(sklearn.feature_selection.f_regression, k=k)
+
+    # fit the object
+    kbest.fit(X, y)
+    
+    # use the object (.get_support() is that array of booleans to filter the list of column names)
+    return X.columns[kbest.get_support()].tolist()
+
+def select_rfe(X, y, k, return_rankings=False, model=LinearRegression()):
+    # Use the passed model, LinearRegression by default
+    rfe = sklearn.feature_selection.RFE(model, n_features_to_select=k)
+    rfe.fit(X, y)
+    features = X.columns[rfe.support_].tolist()
+    if return_rankings:
+        rankings = pd.Series(dict(zip(X.columns, rfe.ranking_)))
+        return features, rankings
+    else:
+        return features
